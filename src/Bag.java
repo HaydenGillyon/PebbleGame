@@ -6,7 +6,11 @@ import java.util.ArrayList;
  * @author Hayden Gillyon
  * @author Jorel Coutinho
  */
-public class Bag {
+public class Bag implements BagInterface{
+
+    Bag(String name){
+        this.name = name;
+    }
 
     /**
      * Represents a single pebble.
@@ -49,4 +53,7 @@ public class Bag {
         this.pebbles = pebbles;
     }
 
+    public String getName() {
+        return name;
+    }
 }

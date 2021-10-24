@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Hayden Gillyon
  * @author Jorel Coutinho
  */
-public class BlackBag extends Bag {
+public class BlackBag extends Bag implements BlackBagInterface {
     private WhiteBag whiteBag;
     public BlackBag(String name) {
         this.name = name;
