@@ -1,5 +1,5 @@
-import java.util.ArrayList;
-import java.util.Random;
+import java.io.*;
+import java.util.*;
 
 /**
  * Represents the pebble game as a whole.
@@ -25,7 +25,7 @@ public class PebbleGame {
 
             boolean flag = false; // Stop playing when flag is true
             while (true) {
-                bagIndex = getRandomInt(0,3);
+                bagIndex = getRandomInt(0, 3);
                 // TAKE PEBBLE
                 pebbles.add(blackBags[bagIndex].takePebble());
 
@@ -63,6 +63,7 @@ public class PebbleGame {
 
     /**
      * Generates a random integer between min and max.
+     *
      * @param min the minimum value (inclusive)
      * @param max the maximum value (exclusive)
      * @return random integer
@@ -75,6 +76,57 @@ public class PebbleGame {
     }
 
     // IO file
+
+    /**
+     * Reads csv file containing weights of pebbles and returns the
+     *
+     * @param file name of pebbles file to be read
+     * @return list of pebble weights as strings
+     * @throws IOException when file exceeds 4,000,000 bytes
+     */
+    public ArrayList<String> readFile(String file) throws IOException {
+        File csv = new File(file);
+        ArrayList<String> values = new ArrayList<>();
+        String line;
+
+        if (csv.length() > 4000000) {
+            throw new IOException("File exceeds 4,000,000 bytes");
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
+            while ((line = br.readLine()) != null) {
+                values.addAll(Arrays.asList(line.split(",")));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return values;
+    }
+
+    /**
+     * Writes the given string to the provided player file and adds a new line
+     *
+     * @param playerFile  player file to be written to
+     * @param playerScore player status update to be written out
+     */
+    public void writeFile(File playerFile, String playerScore) {
+
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(playerFile))) {
+            fileWriter.write(playerScore);
+            fileWriter.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Bag.Pebble> csvToPebbleList(ArrayList<String> initialPebbles) {
+        ArrayList<Bag.Pebble> pebbles = new ArrayList<>();
+        for (String initialPebble : initialPebbles) {
+            Bag.Pebble newPebble = new Bag.Pebble(Integer.parseInt(initialPebble));
+            pebbles.add(newPebble);
+        }
+        return pebbles;
+    }
+
 
     /**
      * Main class where program executes.
@@ -92,5 +144,41 @@ public class PebbleGame {
         for(int i = 0; i < blackBags.length; i++) {
             blackBags[i].setWhiteBag(whiteBags[i]);
         }
+    }
+
+    public void startGame() throws IOException {
+        String Menu = """
+               Welcome to the PebbleGame!!
+               You will be asked to enter the number of players.
+               and then for the location of three files in turn containing comma seperated integer values for the pebble weights.
+               The integer values must be strictly positive.
+               The game will then be simulated, and output written to files in this directory.
+               
+               Please enter the number of players:
+               """;
+
+        String pleaseEnter1 = """
+                Please enter location of bag number 0 to load:
+                """;
+
+        String pleaseEnter2 = """
+                Please enter location of bag number 1 to load:
+                """;
+
+        String pleaseEnter3 = """
+                Please enter location of bag number 2 to load:
+                """;
+        System.out.println(Menu);
+        Scanner input = new Scanner(System.in);
+        String players = input.next();
+        System.out.println(pleaseEnter1);
+        String bag0 = input.next();
+        System.out.println(pleaseEnter2);
+
+
+
+
+
+
     }
 }
