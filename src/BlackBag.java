@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class BlackBag extends Bag implements BlackBagInterface {
     private WhiteBag whiteBag;
     public BlackBag(String name) {
-        this.name = name;
+        super(name);
     }
 
     /**

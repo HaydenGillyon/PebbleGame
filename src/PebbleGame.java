@@ -10,30 +10,49 @@ public class PebbleGame {
 
     static BlackBag[] blackBags = {new BlackBag("X"), new BlackBag("Y"), new BlackBag("Z")};
     static WhiteBag[] whiteBags = {new WhiteBag("A"), new WhiteBag("B"), new WhiteBag("C")};
+    static boolean gameOver = false;
 
     /**
      * Represents a player in the pebble game.
      */
     public static class Player extends Thread {
         private int bagIndex;
+        private ArrayList<Bag.Pebble> pebbles;
 
         public void run() {
-            int weight = 0;
-            ArrayList<Bag.Pebble> pebbles = new ArrayList<>();
-
-            // TODO - FIRST 10 PEBBLES
-
-            while (weight != 100) {
-                bagIndex = getRandomInt(0,2);
+            pebbles = new ArrayList<>();
 
 
-                // AFTER PEBBLE DISCARD AND TAKE
-                weight = getTotalWeight(pebbles);
+            boolean flag = false; // Stop playing when flag is true
+            while (true) {
+                bagIndex = getRandomInt(0,3);
+                // TAKE PEBBLE
+                pebbles.add(blackBags[bagIndex].takePebble());
+
+                // AFTER PEBBLE TAKE
+                boolean canWin = getTotalWeight(pebbles) == 100;
+                if (interrupted()) {
+                    break;
+                } else if (canWin) {
+                    synchronized (this) {
+                        if (gameOver) {
+                            // A player has already won
+                            break;
+                        }
+
+                        gameOver = true;
+                        // TODO - Write to screen and file that the player won
+                        break;
+                    }
+                }
+
+                // TODO - DISCARD PEBBLE
+
             }
         }
 
         // Methods
-        public int getTotalWeight(ArrayList<Bag.Pebble> p) {
+        private int getTotalWeight(ArrayList<Bag.Pebble> p) {
             int countWeight = 0;
             for (Bag.Pebble pebble : p) {
                 countWeight += pebble.getWeight();
@@ -54,6 +73,8 @@ public class PebbleGame {
                 .findFirst()
                 .getAsInt();
     }
+
+    // IO file
 
     /**
      * Main class where program executes.
