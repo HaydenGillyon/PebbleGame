@@ -24,8 +24,7 @@ public class PebbleGameTest {
     }
 
     @Test
-    public void assignBagsTest() {
-        PebbleGame pebbleGame = new PebbleGame();
+    public void testAssignBags() {
         PebbleGame.assignBags();
 
 
@@ -41,5 +40,20 @@ public class PebbleGameTest {
         double average = (double)count / (double)randTest; // t
         assertEquals(average, 50, 10); // Fails if random numbers aren't generated fairly
     }
+
+    @Test
+    public void testCsvToPebbles() {
+        ArrayList<Bag.Pebble> pebble_check = new ArrayList<>();
+        ArrayList<String> pebbles = new ArrayList<>();
+        pebbles.add("2");
+        pebbles.add("200");
+        pebbles.add("2048");
+        pebble_check.add(new Bag.Pebble(2));
+        pebble_check.add(new Bag.Pebble(200));
+        pebble_check.add(new Bag.Pebble(2048));
+        ArrayList<Bag.Pebble> pebble_output = PebbleGame.csvToPebbleList(pebbles);
+        assertEquals(pebble_check , pebble_output);
+    }
+
 
 }

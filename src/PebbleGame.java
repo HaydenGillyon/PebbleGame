@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Represents the pebble game as a whole.
@@ -84,7 +85,7 @@ public class PebbleGame {
      * @return list of pebble weights as strings
      * @throws IOException when file exceeds 4,000,000 bytes
      */
-    public ArrayList<String> readFile(String file) throws IOException {
+    public static ArrayList<String> readFile(String file) throws IOException {
         File csv = new File(file);
         ArrayList<String> values = new ArrayList<>();
         String line;
@@ -108,7 +109,7 @@ public class PebbleGame {
      * @param playerFile  player file to be written to
      * @param playerScore player status update to be written out
      */
-    public void writeFile(File playerFile, String playerScore) {
+    public static void writeFile(File playerFile, String playerScore) {
 
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(playerFile))) {
             fileWriter.write(playerScore);
@@ -118,7 +119,13 @@ public class PebbleGame {
         }
     }
 
-    public ArrayList<Bag.Pebble> csvToPebbleList(ArrayList<String> initialPebbles) {
+    /**
+     * Converts list of pebble weights as strings to a list of pebbles with these weight values.
+     *
+     * @param initialPebbles list of pebble weights as strings
+     * @return list of pebbles with specified weights
+     */
+    public static ArrayList<Bag.Pebble> csvToPebbleList(ArrayList<String> initialPebbles) {
         ArrayList<Bag.Pebble> pebbles = new ArrayList<>();
         for (String initialPebble : initialPebbles) {
             Bag.Pebble newPebble = new Bag.Pebble(Integer.parseInt(initialPebble));
@@ -127,9 +134,9 @@ public class PebbleGame {
         return pebbles;
     }
 
-
     /**
      * Main class where program executes.
+     *
      * @param args command line arguments
      */
     public static void main(String[] args) {
@@ -141,10 +148,45 @@ public class PebbleGame {
      * Assigns each black bag to it's corresponding white bag.
      */
     public static void assignBags() {
-        for(int i = 0; i < blackBags.length; i++) {
+        for (int i = 0; i < blackBags.length; i++) {
             blackBags[i].setWhiteBag(whiteBags[i]);
         }
     }
+
+    public static boolean playerInput(String input) {
+        Pattern pattern = Pattern.compile("\\d+");
+        if (pattern.matcher(input).matches()) {
+            int playerCount = Integer.parseInt(input);
+            if (playerCount <= 100 ) {
+            players = new Player[playerCount];
+            return true;
+            } else {
+                // TODO - fail message
+                return false;
+            }
+        } else if (input.equalsIgnoreCase("e")) {
+            System.exit(0);
+        }
+        // TODO - fail message
+        return false;
+    }
+
+    public static boolean checkCsvInput(String input, BlackBag bagInput) throws IOException {
+        ArrayList<String> csvInput;
+        try {
+            csvInput = readFile(input);
+            if (csvInput.size() <= 11 * players.length){
+                ArrayList<Bag.Pebble> pebbles = csvToPebbleList(csvInput);
+                bagInput.setPebbles(pebbles);
+                return true;
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+
 
     public void startGame() throws IOException {
         String Menu = """
@@ -170,10 +212,25 @@ public class PebbleGame {
                 """;
         System.out.println(Menu);
         Scanner input = new Scanner(System.in);
-        String players = input.next();
+        while (true) {
+            String players = input.next();
+            if (playerInput(players)) break;
+        }
         System.out.println(pleaseEnter1);
-        String bag0 = input.next();
+        while(true) {
+            String bag0 = input.next();
+            if (checkCsvInput(bag0, blackBags[0])) break;
+        }
         System.out.println(pleaseEnter2);
+        while(true) {
+            String bag1 = input.next();
+            if (checkCsvInput(bag1, blackBags[1])) break;
+        }
+        System.out.println(pleaseEnter3);
+        while(true) {
+            String bag2 = input.next();
+            if (checkCsvInput(bag2, blackBags[2])) break;
+        }
 
 
 
