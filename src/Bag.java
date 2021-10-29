@@ -35,7 +35,7 @@ public class Bag implements BagInterface{
 
     // Fields
     private ArrayList<Pebble> pebbles;
-    String name;
+    private String name;
 
     // Methods
     /**

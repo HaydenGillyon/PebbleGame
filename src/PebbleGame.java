@@ -12,6 +12,7 @@ public class PebbleGame {
     static BlackBag[] blackBags = {new BlackBag("X"), new BlackBag("Y"), new BlackBag("Z")};
     static WhiteBag[] whiteBags = {new WhiteBag("A"), new WhiteBag("B"), new WhiteBag("C")};
     static boolean gameOver = false;
+    static Player[] players;
 
     /**
      * Represents a player in the pebble game.
@@ -19,10 +20,13 @@ public class PebbleGame {
     public static class Player extends Thread {
         private int bagIndex;
         private ArrayList<Bag.Pebble> pebbles;
+        private String name;
+        private File playerFile;
 
         public void run() {
             pebbles = new ArrayList<>();
 
+            // TODO - create playerFile
 
             boolean flag = false; // Stop playing when flag is true
             while (true) {
@@ -40,7 +44,7 @@ public class PebbleGame {
                             // A player has already won
                             break;
                         }
-
+                        // TODO - Other player interrupt
                         gameOver = true;
                         // TODO - Write to screen and file that the player won
                         break;
@@ -97,8 +101,11 @@ public class PebbleGame {
             while ((line = br.readLine()) != null) {
                 values.addAll(Arrays.asList(line.split(",")));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            // Throw IOException if input CSV contains non-numeric values
+            Pattern pattern = Pattern.compile("\\d+");
+            if (!values.stream().allMatch(t -> pattern.matcher(t).matches())){
+                throw new IOException("Input Csv contains non-numeric values");
+            }
         }
         return values;
     }
@@ -188,7 +195,11 @@ public class PebbleGame {
 
 
 
-    public void startGame() throws IOException {
+    /**
+     * Sets up the game, collecting the configuration from the user and instantiating pebbles, bags, and players.
+     * @throws IOException when unexpected problem with IO arises
+     */
+    public static void startGame() throws IOException {
         String Menu = """
                Welcome to the PebbleGame!!
                You will be asked to enter the number of players.
@@ -233,7 +244,7 @@ public class PebbleGame {
         }
 
 
-
+        // TODO - finish setting up game
 
 
 

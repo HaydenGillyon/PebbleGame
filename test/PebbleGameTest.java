@@ -30,9 +30,8 @@ public class PebbleGameTest {
 
     }
     @Test
-    public void randomIntTest() {
+    public void testRandomInt() {
         int randTest = 100;
-        PebbleGame pebbleGame = new PebbleGame();
         int count = 0;
         for(int i=0;i<randTest;i++){
             count += PebbleGame.getRandomInt(0,100);
