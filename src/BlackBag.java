@@ -14,7 +14,7 @@ public class BlackBag extends Bag implements BlackBagInterface {
     }
 
     /**
-     *  synchronized method of handling picking pebbles by player
+     * Synchronized method of handling picking pebbles by player
      * @return pebble to player
      */
     public synchronized Pebble takePebble() {
@@ -26,6 +26,15 @@ public class BlackBag extends Bag implements BlackBagInterface {
             fillBlackBag();
         }
         return nextPebble;
+    }
+
+    /**
+     * // TODO THINK ABOUT THIS PROBLEM
+     * @param pebble
+     */
+    public synchronized void returnPebble(Pebble pebble) {
+        ArrayList<Pebble> pebbles = getPebbles();
+        //pebbles.add()
     }
 
     /**

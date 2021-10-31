@@ -18,17 +18,27 @@ public class PebbleGame {
      * Represents a player in the pebble game.
      */
     public static class Player extends Thread {
+        private static final String playerTemplate = "player";
         private int bagIndex;
         private ArrayList<Bag.Pebble> pebbles;
         private String name;
+        private int playerIndex;
         private File playerFile;
 
         public void run() {
             pebbles = new ArrayList<>();
 
-            // TODO - create playerFile
+            // Create player name and file
+            name = playerTemplate + (playerIndex + 1);
+            playerFile = new File("game_output/" + name + "_output.txt");
 
-            boolean flag = false; // Stop playing when flag is true
+            try {
+                playerFile.createNewFile();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
+
             while (true) {
                 bagIndex = getRandomInt(0, 3);
                 // TAKE PEBBLE
@@ -37,7 +47,8 @@ public class PebbleGame {
                 // AFTER PEBBLE TAKE
                 boolean canWin = getTotalWeight(pebbles) == 100;
                 if (interrupted()) {
-                    break;
+                        //blackBags[bagIndex]  // TODO THINK ABOUT THIS PROBLEM
+                        break;
                 } else if (canWin) {
                     synchronized (this) {
                         if (gameOver) {
@@ -45,18 +56,27 @@ public class PebbleGame {
                             break;
                         }
                         // TODO - Other player interrupt
+
+
                         gameOver = true;
                         // TODO - Write to screen and file that the player won
                         break;
                     }
                 }
 
-                // TODO - DISCARD PEBBLE
-
+                // DISCARD PEBBLE
+                int discardIndex = getRandomInt(0, pebbles.size());
+                whiteBags[bagIndex].discardPebble(pebbles.remove(discardIndex));
             }
         }
 
         // Methods
+
+        /**
+         * Returns the total weight of all pebbles in the pebble list.
+         * @param p pebble list
+         * @return combined weight of all pebbles
+         */
         private int getTotalWeight(ArrayList<Bag.Pebble> p) {
             int countWeight = 0;
             for (Bag.Pebble pebble : p) {
@@ -193,7 +213,23 @@ public class PebbleGame {
         return false;
     }
 
+    /**
+     * Deletes all player output files in the game_output directory.
+     */
+    private static void cleanGameOutput() {
+        File outputPath = new File("game_output/");
+        FilenameFilter filter = (path, s) -> s.endsWith("_output.txt");
+        File[] filesToDelete = outputPath.listFiles(filter);
 
+        if (filesToDelete == null) {
+            System.out.println("An I/O error occurred.");
+            System.exit(1);
+        }
+
+        for (File f : filesToDelete) {
+            f.delete();
+        }
+    }
 
     /**
      * Sets up the game, collecting the configuration from the user and instantiating pebbles, bags, and players.
@@ -245,8 +281,9 @@ public class PebbleGame {
 
 
         // TODO - finish setting up game
+        // TODO - create players and assign player indexes
+        // TODO - start player threads
 
-
-
+        cleanGameOutput();
     }
 }
