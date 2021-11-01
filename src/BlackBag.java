@@ -29,15 +29,6 @@ public class BlackBag extends Bag implements BlackBagInterface {
     }
 
     /**
-     * // TODO THINK ABOUT THIS PROBLEM
-     * @param pebble
-     */
-    public synchronized void returnPebble(Pebble pebble) {
-        ArrayList<Pebble> pebbles = getPebbles();
-        //pebbles.add()
-    }
-
-    /**
      * Sets the related white bag.
      * @param whiteBag the white bag to be linked
      */

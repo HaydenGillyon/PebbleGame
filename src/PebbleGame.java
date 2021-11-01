@@ -13,6 +13,7 @@ public class PebbleGame {
     static WhiteBag[] whiteBags = {new WhiteBag("A"), new WhiteBag("B"), new WhiteBag("C")};
     static boolean gameOver = false;
     static Player[] players;
+    static Player playerWon;
 
     /**
      * Represents a player in the pebble game.
@@ -25,8 +26,15 @@ public class PebbleGame {
         private int playerIndex;
         private File playerFile;
 
+        Player(int index){
+            playerIndex = index;
+
+        }
+
         public void run() {
+
             pebbles = new ArrayList<>();
+            // Todo - Add first 10 pebbles
 
             // Create player name and file
             name = playerTemplate + (playerIndex + 1);
@@ -38,35 +46,39 @@ public class PebbleGame {
                 System.out.println(e.getMessage());
                 System.exit(1);
             }
-
+            try {
+                players.wait();
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
             while (true) {
                 bagIndex = getRandomInt(0, 3);
                 // TAKE PEBBLE
-                pebbles.add(blackBags[bagIndex].takePebble());
+                Bag.Pebble takenPebble = blackBags[bagIndex].takePebble();
+                pebbles.add(takenPebble);
+                String takePebble = name + " has drawn a " + takenPebble.getWeight() + " from bag " + blackBags[bagIndex].getName();
+
 
                 // AFTER PEBBLE TAKE
-                boolean canWin = getTotalWeight(pebbles) == 100;
-                if (interrupted()) {
-                        //blackBags[bagIndex]  // TODO THINK ABOUT THIS PROBLEM
-                        break;
-                } else if (canWin) {
+                if (getTotalWeight(pebbles) == 100) {
                     synchronized (this) {
-                        if (gameOver) {
-                            // A player has already won
-                            break;
+                        if (!gameOver) {
+                            gameOver = true;
+                            String winner = name + " has won \uD83C\uDF89 \uD83C\uDF89\uD83C\uDF89";
+                            // TODO - Write to screen
+                            writeFile(playerFile , winner );
                         }
-                        // TODO - Other player interrupt
-
-
-                        gameOver = true;
-                        // TODO - Write to screen and file that the player won
-                        break;
                     }
                 }
 
                 // DISCARD PEBBLE
                 int discardIndex = getRandomInt(0, pebbles.size());
                 whiteBags[bagIndex].discardPebble(pebbles.remove(discardIndex));
+                if(gameOver){
+                    break;
+                }
+
             }
         }
 
@@ -134,15 +146,16 @@ public class PebbleGame {
      * Writes the given string to the provided player file and adds a new line
      *
      * @param playerFile  player file to be written to
-     * @param playerScore player status update to be written out
+     * @param output player status update to be written out
      */
-    public static void writeFile(File playerFile, String playerScore) {
+    public static void writeFile(File playerFile, String output) {
 
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(playerFile))) {
-            fileWriter.write(playerScore);
+            fileWriter.write(output);
             fileWriter.newLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.exit(0);
         }
     }
 
@@ -188,13 +201,13 @@ public class PebbleGame {
             players = new Player[playerCount];
             return true;
             } else {
-                // TODO - fail message
+                System.out.println(" Player less than or equal to a 100");
                 return false;
             }
         } else if (input.equalsIgnoreCase("e")) {
             System.exit(0);
         }
-        // TODO - fail message
+        System.out.println("please enter valid numerical positive input");
         return false;
     }
 
@@ -211,6 +224,15 @@ public class PebbleGame {
             System.out.println(e.getMessage());
         }
         return false;
+    }
+
+    public static void setupGame() {
+        for (int i = 0 ; i < players.length; i++ ){
+            players[i] = new Player(i);
+            players[i].start();
+        }
+        Thread object = new Thread();
+        object.notifyAll();
     }
 
     /**
@@ -279,10 +301,7 @@ public class PebbleGame {
             if (checkCsvInput(bag2, blackBags[2])) break;
         }
 
-
-        // TODO - finish setting up game
-        // TODO - create players and assign player indexes
-        // TODO - start player threads
+        setupGame();
 
         cleanGameOutput();
     }
