@@ -13,7 +13,6 @@ public class PebbleGame {
     static WhiteBag[] whiteBags = {new WhiteBag("A"), new WhiteBag("B"), new WhiteBag("C")};
     static boolean gameOver = false;
     static Player[] players;
-    static Player playerWon;
 
     /**
      * Represents a player in the pebble game.
@@ -32,9 +31,8 @@ public class PebbleGame {
         }
 
         public void run() {
-
-            pebbles = new ArrayList<>();
             // Todo - Add first 10 pebbles
+            initialisePebbles();
 
             // Create player name and file
             name = playerTemplate + (playerIndex + 1);
@@ -46,35 +44,50 @@ public class PebbleGame {
                 System.out.println(e.getMessage());
                 System.exit(1);
             }
-            try {
-                players.wait();
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-                System.exit(1);
-            }
+
+            boolean first = true;
             while (true) {
-                bagIndex = getRandomInt(0, 3);
-                // TAKE PEBBLE
-                Bag.Pebble takenPebble = blackBags[bagIndex].takePebble();
-                pebbles.add(takenPebble);
-                String takePebble = name + " has drawn a " + takenPebble.getWeight() + " from bag " + blackBags[bagIndex].getName();
+                if (!first) { // Doesn't run on first iteration
+                    bagIndex = getRandomInt(0, 3);
+                    // TAKE PEBBLE
+                    Bag.Pebble takenPebble = blackBags[bagIndex].takePebble();
+                    pebbles.add(takenPebble);
 
+                    // Write take pebble status to file
+                    String takePebble = name + " has drawn a "
+                            + takenPebble.getWeight() + " from bag "
+                            + blackBags[bagIndex].getName() + '\n'
+                            + name + " hand is " + getPebblesString();
 
-                // AFTER PEBBLE TAKE
+                    writeFile(playerFile, takePebble);
+                } else {
+                    first = false;
+                }
+                // CHECK IF THIS PLAYER WINS
                 if (getTotalWeight(pebbles) == 100) {
                     synchronized (this) {
                         if (!gameOver) {
                             gameOver = true;
-                            String winner = name + " has won \uD83C\uDF89 \uD83C\uDF89\uD83C\uDF89";
-                            // TODO - Write to screen
-                            writeFile(playerFile , winner );
+                            String winner = name + " has won \uD83C\uDF89 \uD83C\uDF89 \uD83C\uDF89";
+                            System.out.println(winner);
+                            writeFile(playerFile, winner);
                         }
                     }
                 }
 
                 // DISCARD PEBBLE
                 int discardIndex = getRandomInt(0, pebbles.size());
-                whiteBags[bagIndex].discardPebble(pebbles.remove(discardIndex));
+                Bag.Pebble discardedPebble = pebbles.remove(discardIndex);
+                whiteBags[bagIndex].discardPebble(discardedPebble);
+
+                // Write discard pebble status to file
+                String discardPebble = name + " has discarded a "
+                        + discardedPebble.getWeight() + " to bag "
+                        + whiteBags[bagIndex].getName() + '\n'
+                        + name + " hand is " + getPebblesString();
+
+                writeFile(playerFile, discardPebble);
+
                 if(gameOver){
                     break;
                 }
@@ -95,6 +108,39 @@ public class PebbleGame {
                 countWeight += pebble.getWeight();
             }
             return countWeight;
+        }
+
+        /**
+         * Synchronized method to find a bag with enough pebbles by random
+         * and initialise the first pebbles from this.
+         */
+        private synchronized void initialisePebbles() {
+            boolean pebblesTaken = false;
+            pebbles = new ArrayList<>();
+            while (!pebblesTaken) {
+                // TODO find bag containing 10 or more pebbles
+                if (pebbles.size() >= 10) pebblesTaken = true;
+            }
+        }
+
+        /**
+         * Generates a string representation of the weights of the player's
+         * currently held pebbles.
+         * @return string of player's pebble's weights
+         */
+        private String getPebblesString() {
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+
+            for (Bag.Pebble pebble : pebbles) {
+                if (!first) {
+                    sb.append(", ");
+                } else {
+                    first = false;
+                }
+                sb.append(pebble.getWeight());
+            }
+            return sb.toString();
         }
     }
 
@@ -182,6 +228,13 @@ public class PebbleGame {
     public static void main(String[] args) {
         // Assigning white bags to black bags
         assignBags();
+
+        try {
+            startGame();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
     }
 
     /**
@@ -231,8 +284,6 @@ public class PebbleGame {
             players[i] = new Player(i);
             players[i].start();
         }
-        Thread object = new Thread();
-        object.notifyAll();
     }
 
     /**
@@ -300,9 +351,7 @@ public class PebbleGame {
             String bag2 = input.next();
             if (checkCsvInput(bag2, blackBags[2])) break;
         }
-
-        setupGame();
-
         cleanGameOutput();
+        setupGame();
     }
 }

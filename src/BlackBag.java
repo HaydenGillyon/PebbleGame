@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 
-//TODO poll in black bag
-
 /**
  * Represents a black bag.
  * @author Hayden Gillyon
@@ -14,7 +12,7 @@ public class BlackBag extends Bag implements BlackBagInterface {
     }
 
     /**
-     * Synchronized method of handling picking pebbles by player
+     * Synchronized method of handling picking pebbles by player.
      * @return pebble to player
      */
     public synchronized Pebble takePebble() {
@@ -26,6 +24,14 @@ public class BlackBag extends Bag implements BlackBagInterface {
             fillBlackBag();
         }
         return nextPebble;
+    }
+
+    /**
+     * Synchronized method to get the amount of pebbles in this bag.
+     * @return length of bag's pebbles arraylist
+     */
+    public synchronized int getPebbleAmount() {
+        return getPebbles().size();
     }
 
     /**
