@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class WhiteBag extends Bag implements WhiteBagInterface {
     /**
-     *
+     * Constructs a white bag with the provided name.
      * @param name - assigns the name of the white bag
      */
     public WhiteBag(String name) {

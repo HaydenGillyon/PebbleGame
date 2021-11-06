@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 
 
 public class BlackBagTest {
-    ArrayList<Bag.Pebble> whitePebbles = new ArrayList<>();
-    BlackBag blackBag = new BlackBag("testBlackBag");
+    ArrayList<Bag.Pebble> whitePebbles;
+    BlackBag blackBag;
 
     @Before
     public void setupTest(){

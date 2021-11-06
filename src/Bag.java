@@ -8,6 +8,10 @@ import java.util.ArrayList;
  */
 public class Bag implements BagInterface{
 
+    /**
+     * Constructs a bag with the specified name.
+     * @param name name of bag
+     */
     Bag(String name){
         this.name = name;
     }
@@ -31,6 +35,27 @@ public class Bag implements BagInterface{
         public int getWeight() {
             return weight;
         }
+
+        /**
+         * Calculates and returns whether this pebble and the given object are equal.
+         * @param o object to check
+         * @return true if this pebble and o are the same, or have the same weight
+         */
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null) {
+                return false;
+            }
+            if (getClass() != o.getClass()) {
+                return false;
+            }
+
+            Pebble pebble = (Pebble) o;
+            return weight == pebble.weight;
+        }
     }
 
     // Fields
@@ -53,6 +78,10 @@ public class Bag implements BagInterface{
         this.pebbles = pebbles;
     }
 
+    /**
+     * Gets the name of this bag.
+     * @return bag name
+     */
     public String getName() {
         return name;
     }
