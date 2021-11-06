@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -32,7 +31,7 @@ public class PebbleGame {
         }
 
         /**
-         * Run method for
+         * Run method for player thread.
          */
         public void run() {
             initialisePebbles();
@@ -66,6 +65,7 @@ public class PebbleGame {
                 } else {
                     first = false;
                 }
+
                 // CHECK IF THIS PLAYER WINS
                 if (getTotalWeight(pebbles) == 100) {
                     synchronized (this) {
@@ -94,7 +94,6 @@ public class PebbleGame {
                 if(gameOver){
                     break;
                 }
-
             }
         }
 
@@ -118,15 +117,15 @@ public class PebbleGame {
          * and initialise the first pebbles from this.
          */
         private synchronized void initialisePebbles() {
+            ArrayList<BlackBag> bags = new ArrayList<>(Arrays.asList(blackBags));
             boolean pebblesTaken = false;
             while (!pebblesTaken) {
-                int bagIndex = PebbleGame.getRandomInt(0,2);
-                boolean[] bagCheck = {false, false, false};
-                if (blackBags[bagIndex].getPebbleAmount() > 10) {
-                    pebbles = blackBags[bagIndex].takeTenPebbles();
+                int bagIndex = getRandomInt(0, bags.size());
 
+                if (bags.get(bagIndex).getPebbleAmount() > 10) {
+                    pebbles = bags.get(bagIndex).takeTenPebbles();
                 } else {
-                     bagCheck[bagIndex] = true;
+                     bags.remove(bagIndex);
                 }
 
                 if (pebbles.size() >= 10){
@@ -190,6 +189,7 @@ public class PebbleGame {
         }
         try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
             while ((line = br.readLine()) != null) {
+                line = line.replaceAll(" ", "");    // Format to remove spaces
                 values.addAll(Arrays.asList(line.split(",")));
             }
             // Throw IOException if input CSV contains non-numeric values
@@ -281,7 +281,7 @@ public class PebbleGame {
         ArrayList<String> csvInput;
         try {
             csvInput = readFile(input);
-            if (csvInput.size() <= 11 * players.length){
+            if (csvInput.size() >= 11 * players.length){
                 ArrayList<Bag.Pebble> pebbles = csvToPebbleList(csvInput);
                 bagInput.setPebbles(pebbles);
                 return true;
@@ -302,8 +302,13 @@ public class PebbleGame {
     /**
      * Deletes all player output files in the game_output directory.
      */
-    private static void cleanGameOutput() {
+    public static void cleanGameOutput() {
         File outputPath = new File("game_output/");
+
+        if (outputPath.mkdirs()){
+            return;
+        }
+
         FilenameFilter filter = (path, s) -> s.endsWith("_output.txt");
         File[] filesToDelete = outputPath.listFiles(filter);
 
@@ -364,6 +369,11 @@ public class PebbleGame {
             String bag2 = input.next();
             if (checkCsvInput(bag2, blackBags[2])) break;
         }
+
+        whiteBags[0].setPebbles(new ArrayList<>());
+        whiteBags[1].setPebbles(new ArrayList<>());
+        whiteBags[2].setPebbles(new ArrayList<>());
+
         cleanGameOutput();
         setupGame();
     }

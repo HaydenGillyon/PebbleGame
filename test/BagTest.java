@@ -13,6 +13,6 @@ public class BagTest {
 
         bag.setPebbles(pebbles);
         assertEquals(bag.getPebbles(), pebbles);
+        assertEquals("TestBag", bag.getName());
     }
-
 }

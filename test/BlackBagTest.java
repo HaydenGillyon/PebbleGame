@@ -35,13 +35,14 @@ public class BlackBagTest {
     @Test
     public void testTakeTenPebbles() {
         ArrayList<Bag.Pebble> blackPebbles =  new ArrayList<>();
-        for (int i =0 ; i < 10 ; i++) {
+        for (int i =0 ; i < 11; i++) {
             blackPebbles.add(new Bag.Pebble(3*i));
         }
         blackBag.setPebbles(blackPebbles);
         ArrayList<Bag.Pebble> test = blackBag.takeTenPebbles();
 
         assertEquals(10, test.size());
+        assertEquals(1, blackBag.getPebbleAmount());
     }
 
 }
