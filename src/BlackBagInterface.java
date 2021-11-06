@@ -1,4 +1,8 @@
+import java.util.ArrayList;
+
 public interface BlackBagInterface extends BagInterface{
-    public void setWhiteBag(WhiteBag whiteBag);
-    public Bag.Pebble takePebble();
+    void setWhiteBag(WhiteBag whiteBag);
+    Bag.Pebble takePebble();
+    ArrayList<Bag.Pebble> takeTenPebbles();
+    int getPebbleAmount();
 }

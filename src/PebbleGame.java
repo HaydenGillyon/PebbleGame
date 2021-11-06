@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -116,12 +117,22 @@ public class PebbleGame {
          */
         private synchronized void initialisePebbles() {
             boolean pebblesTaken = false;
-            pebbles = new ArrayList<>();
             while (!pebblesTaken) {
-                // TODO find bag containing 10 or more pebbles
-                if (pebbles.size() >= 10) pebblesTaken = true;
+                int bagIndex = PebbleGame.getRandomInt(0,2);
+                boolean[] bagCheck = {false, false, false};
+                if (blackBags[bagIndex].getPebbleAmount() > 10) {
+                    pebbles = blackBags[bagIndex].takeTenPebbles();
+
+                } else {
+                     bagCheck[bagIndex] = true;
+                }
+
+                if (pebbles.size() >= 10){
+                    pebblesTaken = true;
+                }
             }
         }
+
 
         /**
          * Generates a string representation of the weights of the player's

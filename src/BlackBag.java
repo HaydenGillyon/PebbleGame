@@ -27,6 +27,22 @@ public class BlackBag extends Bag implements BlackBagInterface {
     }
 
     /**
+     * Synchronized method to handle picking of initial ten pebbles by player.
+     * @return the initial ten pebbles
+     */
+    public synchronized ArrayList<Pebble> takeTenPebbles() {
+        ArrayList<Pebble> pebbles = getPebbles();
+        ArrayList<Pebble> theTen = new ArrayList<>();
+        while (theTen.size() < 10) {
+            int length = getPebbles().size();
+            int pebbleIndex = PebbleGame.getRandomInt(0,length);
+            Pebble nextPebble = pebbles.remove(pebbleIndex);
+            theTen.add(nextPebble);
+        }
+        return theTen;
+    }
+
+    /**
      * Synchronized method to get the amount of pebbles in this bag.
      * @return length of bag's pebbles arraylist
      */
@@ -51,5 +67,8 @@ public class BlackBag extends Bag implements BlackBagInterface {
         whiteBag.setPebbles(newWhitePebbles);   // set white bag to empty white bag
     }
 
+    public WhiteBag getWhiteBag() {
+        return whiteBag;
+    }
 
 }
