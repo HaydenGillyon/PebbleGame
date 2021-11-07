@@ -1,13 +1,13 @@
-import com.sun.source.tree.AssertTree;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
-
 import static org.junit.Assert.*;
+import java.io.InputStream;
+
+
 public class PebbleGameTest {
     ArrayList<Bag.Pebble> whitePebbles = new ArrayList<>();
     BlackBag blackBag = new BlackBag("testBlackBag");
@@ -25,11 +25,6 @@ public class PebbleGameTest {
         ArrayList<Bag.Pebble> blackPebbles = new ArrayList<>();
         blackPebbles.add(new Bag.Pebble(9001));
         blackBag.setPebbles(blackPebbles);
-    }
-
-    @Test
-    public void testAssignBags() {
-        PebbleGame.assignBags();
     }
 
     @Test
@@ -62,30 +57,25 @@ public class PebbleGameTest {
     public void testCheckCsvInput() throws IOException {
         PebbleGame.players = new PebbleGame.Player[1];
         PebbleGame.players[0] = new PebbleGame.Player(0);
+        BlackBag blackBag = new BlackBag("testBlackBag");
 
-        PebbleGame.checkCsvInput(testPebbleFile, PebbleGame.blackBags[0]);
-        PebbleGame.checkCsvInput(testPebbleFile, PebbleGame.blackBags[1]);
-        PebbleGame.checkCsvInput(testPebbleFile, PebbleGame.blackBags[2]);
+        PebbleGame.checkCsvInput(testPebbleFile, blackBag);
 
-        assertEquals(100, PebbleGame.blackBags[0].getPebbleAmount());
+        assertEquals(30, blackBag.getPebbleAmount());
     }
 
     @Test
     public void testPlayerRun() throws InterruptedException {
         PebbleGame.assignBags();
         String weightLine = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,"
-                + " 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,"
-                + " 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,"
-                + " 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,"
-                + " 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,"
-                + " 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96,"
-                + " 97, 98, 99, 100";
+                + " 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30";
         weightLine = weightLine.replaceAll(" ", "");
         ArrayList<String> weights = new ArrayList<>(Arrays.asList(weightLine.split(",")));
 
         ArrayList<Bag.Pebble> testPebbles1 = PebbleGame.csvToPebbleList(weights);
         ArrayList<Bag.Pebble> testPebbles2 = PebbleGame.csvToPebbleList(weights);
         ArrayList<Bag.Pebble> testPebbles3 = PebbleGame.csvToPebbleList(weights);
+
 
         PebbleGame.blackBags[0].setPebbles(testPebbles1);
         PebbleGame.blackBags[1].setPebbles(testPebbles2);
@@ -96,14 +86,39 @@ public class PebbleGameTest {
         PebbleGame.whiteBags[2].setPebbles(new ArrayList<>());
 
         PebbleGame.cleanGameOutput();
+        PebbleGame.players = new PebbleGame.Player[1];
+        PebbleGame.setupGame();
 
-        PebbleGame.Player testPlayer = new PebbleGame.Player(0);
-        testPlayer.start();
-
-        testPlayer.join(2000);
+        PebbleGame.players[0].join(2000);
 
         assertTrue(PebbleGame.gameOver);
     }
 
+    @Test
+    public void testPlayerInput(){
+        boolean check = PebbleGame.playerInput("10");
+        assertTrue(check);
+        assertEquals(10, PebbleGame.players.length);
+    }
 
+    @Test
+    public void testStartGame() throws InterruptedException {
+        InputStream stdin = System.in;  // To reset System.in after test
+        InputStream in = new ByteArrayInputStream(
+                ("1\ntestRes/example_file_3.csv"
+                + "\ntestRes/example_file_3.csv"
+                + "\ntestRes/example_file_3.csv").getBytes());
+        System.setIn(in);
+        PebbleGame.main(new String[0]);
+        System.setIn(stdin);
+        PebbleGame.players[0].join(2000);
+
+        assertTrue(PebbleGame.gameOver);
+    }
+
+    @Test
+    public void testWrongStartGameInput() throws InterruptedException {
+        boolean check = PebbleGame.playerInput("-1");
+        assertFalse(check);
+    }
 }

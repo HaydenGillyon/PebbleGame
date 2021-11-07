@@ -71,7 +71,12 @@ public class PebbleGame {
                     synchronized (this) {
                         if (!gameOver) {
                             gameOver = true;
-                            String winner = name + " has won \uD83C\uDF89 \uD83C\uDF89 \uD83C\uDF89";
+                            String winner =
+                                    "##############################################"
+                                            + "\n\n" + "           " + name +
+                                     " has won \uD83C\uDF89 \uD83C\uDF89 \uD83C\uDF89" + "\n\n" +
+                                    "##############################################";
+
                             System.out.println(winner);
                             writeFile(playerFile, winner);
                         }
@@ -169,8 +174,6 @@ public class PebbleGame {
                 .findFirst()
                 .getAsInt();
     }
-
-    // IO file
 
     /**
      * Reads csv file containing weights of pebbles and returns the
