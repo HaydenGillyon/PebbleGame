@@ -15,6 +15,11 @@ public class PebbleGameTest {
 
     @Before
     public void setupTest(){
+
+        PebbleGame.blackBags = new BlackBag[]{new BlackBag("X") , new BlackBag("Y"),new  BlackBag("Z")};
+        PebbleGame.whiteBags = new WhiteBag[]{new WhiteBag("A") , new WhiteBag("B"),new  WhiteBag("C")};
+        PebbleGame.gameOver = false;
+
         WhiteBag whiteBag = new WhiteBag("testWhiteBag");
 
         whitePebbles.add(new Bag.Pebble(100));

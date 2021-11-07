@@ -67,6 +67,10 @@ public class BlackBag extends Bag implements BlackBagInterface {
         whiteBag.setPebbles(newWhitePebbles);   // set white bag to empty white bag
     }
 
+    /**
+     * Gets the WhiteBag associated with this BlackBag.
+     * @return this BlackBag's associated WhiteBag
+     */
     public WhiteBag getWhiteBag() {
         return whiteBag;
     }

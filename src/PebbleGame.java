@@ -27,7 +27,6 @@ public class PebbleGame {
 
         Player(int index){
             playerIndex = index;
-
         }
 
         /**
@@ -212,7 +211,7 @@ public class PebbleGame {
      */
     public static void writeFile(File playerFile, String output) {
 
-        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(playerFile))) {
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(playerFile, true))) {
             fileWriter.write(output);
             fileWriter.newLine();
         } catch (IOException e) {
@@ -262,25 +261,41 @@ public class PebbleGame {
         }
     }
 
+    /**
+     * Constructs user specified amount of players after validating input.
+     * @param input user specified amount of players
+     * @return true if input for amount of players was valid
+     */
     public static boolean playerInput(String input) {
         Pattern pattern = Pattern.compile("\\d+");
+
         if (pattern.matcher(input).matches()) {
             int playerCount = Integer.parseInt(input);
+
             if (playerCount <= 100 ) {
             players = new Player[playerCount];
             return true;
             } else {
-                System.out.println(" Player less than or equal to a 100");
+                System.out.println("Player less than or equal to a 100");
                 return false;
             }
+
         } else if (input.equalsIgnoreCase("e")) {
             System.exit(0);
         }
-        System.out.println("please enter valid numerical positive input");
+
+        System.out.println("Please enter valid numerical positive input");
         return false;
     }
 
-    public static boolean checkCsvInput(String input, BlackBag bagInput) throws IOException {
+    /**
+     * Constructs pebbles from csv file of integer weights and places them in
+     * bagInput's pebbles list after validating user's csv file.
+     * @param input csv file containing pebble weights
+     * @param bagInput bag to fill with new pebbles
+     * @return true if user input for filename was valid and no IOException occurs
+     */
+    public static boolean checkCsvInput(String input, BlackBag bagInput) {
         ArrayList<String> csvInput;
         try {
             csvInput = readFile(input);
@@ -295,6 +310,9 @@ public class PebbleGame {
         return false;
     }
 
+    /**
+     * Creates and starts enough player threads to fill players array.
+     */
     public static void setupGame() {
         for (int i = 0 ; i < players.length; i++ ){
             players[i] = new Player(i);
