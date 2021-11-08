@@ -34,6 +34,7 @@ public class PebbleGame {
          */
         public void run() {
             initialisePebbles();
+            bagIndex = getRandomInt(0, 3);
 
             // Create player name and file
             name = playerTemplate + (playerIndex + 1);
@@ -83,8 +84,7 @@ public class PebbleGame {
                 }
 
                 // DISCARD PEBBLE
-                int discardIndex = getRandomInt(0, pebbles.size());
-                Bag.Pebble discardedPebble = pebbles.remove(discardIndex);
+                Bag.Pebble discardedPebble = pebbles.remove(bagIndex);
                 whiteBags[bagIndex].discardPebble(discardedPebble);
 
                 // Write discard pebble status to file
