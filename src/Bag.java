@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * @author Hayden Gillyon
  * @author Jorel Coutinho
  */
-public class Bag implements BagInterface{
+public abstract class Bag implements BagInterface{
 
     /**
      * Constructs a bag with the specified name.
