@@ -16,7 +16,7 @@ java -jar pebbles.jar
 ~~~
 
 
-## Test Setop
+## Test Setup
 
 * Unzip Pebble.zip
 * Unzip pebblesTest.zip
