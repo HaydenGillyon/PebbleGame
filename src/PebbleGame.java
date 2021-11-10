@@ -175,11 +175,12 @@ public class PebbleGame {
     }
 
     /**
-     * Reads csv file containing weights of pebbles and returns the
+     * Reads csv file containing weights of pebbles to load and returns the weights
+     * as an ArrayList of strings after checking that the file follows the correct format.
      *
      * @param file name of pebbles file to be read
      * @return list of pebble weights as strings
-     * @throws IOException when file exceeds 4,000,000 bytes
+     * @throws IOException when file exceeds 4,000,000 bytes or unexpected problem with IO arises
      */
     public static ArrayList<String> readFile(String file) throws IOException {
         File csv = new File(file);
@@ -204,7 +205,7 @@ public class PebbleGame {
     }
 
     /**
-     * Writes the given string to the provided player file and adds a new line
+     * Writes the given string to the provided player file and adds a new line.
      *
      * @param playerFile  player file to be written to
      * @param output player status update to be written out
