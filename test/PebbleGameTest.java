@@ -34,13 +34,13 @@ public class PebbleGameTest {
 
     @Test
     public void testRandomInt() {
-        int randTest = 100;
+        int randTest = 500;
         int count = 0;
         for(int i=0;i<randTest;i++){
             count += PebbleGame.getRandomInt(0,100);
         }
         double average = (double)count / (double)randTest; // t
-        assertEquals(average, 50, 10); // Fails if random numbers aren't generated fairly
+        assertEquals(average, 50, 5); // Fails if random numbers aren't generated fairly
     }
 
     @Test
