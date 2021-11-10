@@ -115,8 +115,8 @@ public class PebbleGameTest {
                 + "\ntestRes/example_file_3.csv").getBytes());
         System.setIn(in);
         PebbleGame.main(new String[0]);
-        System.setIn(stdin);
         PebbleGame.players[0].join(2000);
+        System.setIn(stdin);
 
         assertTrue(PebbleGame.gameOver);
     }
