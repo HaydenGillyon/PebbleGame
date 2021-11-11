@@ -74,7 +74,7 @@ public class PebbleGame {
                             String winner =
                                     "##############################################"
                                             + "\n\n" + "           " + name +
-                                     " has won \uD83C\uDF89 \uD83C\uDF89 \uD83C\uDF89" + "\n\n" +
+                                     " has won ! ! !" + "\n\n" +
                                     "##############################################";
 
                             System.out.println(winner);
@@ -304,6 +304,8 @@ public class PebbleGame {
                 ArrayList<Bag.Pebble> pebbles = csvToPebbleList(csvInput);
                 bagInput.setPebbles(pebbles);
                 return true;
+            } else {
+                System.out.println("There must be at least 11 pebbles per player in the file.");
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -373,22 +375,22 @@ public class PebbleGame {
         System.out.println(Menu);
         Scanner input = new Scanner(System.in);
         while (true) {
-            String players = input.next();
+            String players = input.nextLine();
             if (playerInput(players)) break;
         }
         System.out.println(pleaseEnter1);
         while(true) {
-            String bag0 = input.next();
+            String bag0 = input.nextLine();
             if (checkCsvInput(bag0, blackBags[0])) break;
         }
         System.out.println(pleaseEnter2);
         while(true) {
-            String bag1 = input.next();
+            String bag1 = input.nextLine();
             if (checkCsvInput(bag1, blackBags[1])) break;
         }
         System.out.println(pleaseEnter3);
         while(true) {
-            String bag2 = input.next();
+            String bag2 = input.nextLine();
             if (checkCsvInput(bag2, blackBags[2])) break;
         }
 
